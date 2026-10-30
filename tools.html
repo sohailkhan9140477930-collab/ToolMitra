@@ -1,0 +1,809 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4f46e5">
+<title>ToolMitra - All-in-One Tools</title>
+
+<style>
+:root{--p:#4f46e5;--bg:#f5f7ff;--ink:#172033;--muted:#64748b;--line:#e2e8f0}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.hero{background:linear-gradient(125deg,#4338ca,#6366f1,#0891b2);color:white;padding:20px 16px 30px}
+.top,.heroIn,main,.foot{max-width:1080px;margin:auto}
+.top{display:flex;justify-content:space-between;align-items:center;position:relative}
+.brand{font-size:25px;font-weight:900}
+.brand span{color:#a5f3fc}
+.menu{background:#ffffff20;color:white;border:1px solid #ffffff66;border-radius:10px;padding:9px 12px}
+.dropdown{display:none;position:absolute;right:0;top:48px;background:white;color:#172033;border-radius:12px;padding:8px;z-index:10;box-shadow:0 8px 24px #0002}
+.dropdown.show{display:grid}
+.dropdown button{border:0;background:white;text-align:left;padding:11px;border-radius:8px}
+.dropdown button:hover{background:#eef2ff}
+.heroIn{padding-top:28px}
+.hero h1{font-size:clamp(28px,5vw,42px);line-height:1.12;margin:0 0 10px}
+.hero p{line-height:1.6;color:#e0e7ff}
+.search{width:100%;max-width:650px;padding:15px;border:0;border-radius:13px;color:#172033}
+.wrap{padding:20px 15px 40px}
+.head{display:flex;justify-content:space-between;align-items:center}
+.head h2{font-size:22px}
+.muted{color:var(--muted);font-size:13px}
+.chips{display:flex;gap:8px;overflow:auto;padding-bottom:14px}
+.chip{white-space:nowrap;background:white;border:1px solid var(--line);padding:9px 13px;border-radius:22px}
+.chip.active{background:#e0e7ff;border-color:#a5b4fc;color:#3730a3;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:13px}
+.card{background:white;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 8px 25px #1e293b0a;display:flex;flex-direction:column;min-height:170px}
+.ico{font-size:25px;background:#eef2ff;border-radius:12px;width:45px;height:45px;display:grid;place-items:center}
+.card h3{font-size:17px;margin:11px 0 6px}
+.card p{font-size:13px;color:var(--muted);line-height:1.5;flex:1;margin:0 0 13px}
+.btn{border:0;background:var(--p);color:white;border-radius:10px;padding:11px 14px;font-weight:700}
+.btn.gray{background:#e2e8f0;color:#1e293b}
+.btn.green{background:#059669}
+.panel{display:none;background:white;border:1px solid var(--line);border-radius:17px;padding:18px;margin-top:20px}
+.panel.show{display:block}
+.panel.tool-page{min-height:calc(100vh - 30px);margin-top:0;border-radius:0;border-left:0;border-right:0;padding:18px max(16px,calc((100% - 850px)/2))}
+.paneltop{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px}
+.paneltop h2{font-size:21px;margin:0}
+.close{border:0;background:#f1f5f9;border-radius:9px;padding:8px 11px}
+.field{margin:14px 0}
+.field label{display:block;font-size:14px;font-weight:700;margin-bottom:7px}
+.field input:not([type=checkbox]),.field textarea,.field select{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;background:white;color:#172033}
+.field textarea{min-height:100px}
+.result{white-space:pre-wrap;overflow-wrap:anywhere;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:11px;padding:13px;min-height:40px;margin:12px 0}
+.note,.status{font-size:13px;line-height:1.6;color:#475569;margin-top:10px}
+.note{padding:11px;background:#eff6ff;border-radius:10px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>*{flex:1;min-width:130px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.stat{background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:12px}
+.stat b{font-size:21px;display:block}
+.qr{display:block;max-width:260px;width:100%;margin:15px auto}
+footer{background:#111827;color:#cbd5e1;padding:25px 16px}
+footer a{color:#a5f3fc;margin-right:12px;line-height:2}
+.legal{line-height:1.7}
+.hide{display:none!important}
+a{overflow-wrap:anywhere}
+@media(max-width:480px){
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .card{padding:12px;min-height:180px}
+ .card h3{font-size:15px}
+ .card p{font-size:12px}
+ .card .btn{font-size:12px;padding:10px 7px}
+ .ico{width:39px;height:39px}
+}
+</style>
+</head>
+
+<body>
+
+<header class="hero" id="hero">
+  <div class="top">
+    <div class="brand">🧰 Tool<span>Mitra</span></div>
+    <button class="menu" id="menuBtn">☰ Menu</button>
+    <div class="dropdown" id="dropdown">
+      <button data-info="about">ℹ️ About Us</button>
+      <button data-info="contact">📩 Contact Us</button>
+      <button data-info="privacy">🔒 Privacy Policy</button>
+      <button data-info="terms">📃 Terms & Conditions</button>
+      <button data-info="disclaimer">⚠️ Disclaimer</button>
+    </div>
+  </div>
+  <div class="heroIn">
+    <h1>Useful tools.<br>All in one place.</h1>
+    <p>PDF tools, QR Code, text utilities और calculators — आसान, तेज़ और मोबाइल-फ्रेंडली।</p>
+    <input class="search" id="search" placeholder="🔍 Search tools... PDF, QR, calculator">
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="head" id="homeHead">
+    <h2>Explore Tools</h2>
+    <span class="muted" id="count">18 tools</span>
+  </div>
+
+  <div class="chips" id="chips">
+    <button class="chip active" data-cat="all">All Tools</button>
+    <button class="chip" data-cat="pdf">PDF Tools</button>
+    <button class="chip" data-cat="text">Text Tools</button>
+    <button class="chip" data-cat="calc">Calculators</button>
+    <button class="chip" data-cat="utility">Utilities</button>
+  </div>
+
+  <section class="grid" id="grid">
+    <article class="card" data-cat="pdf" data-search="image to pdf photo jpg png">
+      <div class="ico">🖼️</div><h3>Image to PDF</h3>
+      <p>एक या कई images को PDF में बदलें।</p><button class="btn" data-tool="imagepdf">Open Tool →</button>
+    </article>
+    <article class="card" data-cat="pdf" data-search="merge combine pdf files">
+      <div class="ico">📚</div><h3>PDF Merge</h3>
+      <p>कई PDF फाइलों को एक PDF में जोड़ें।</p><button class="btn" data-tool="merge">Open Tool →</button>
+    </article>
+    <article class="card" data-cat="pdf" data-search="split pdf extract pages">
+      <div class="ico">✂️</div><h3>PDF Split</h3>
+      <p>PDF से चुने हुए pages निकालें।</p><button class="btn" data-tool="split">Open Tool →</button>
+    </article>
+    <article class="card" data-cat="pdf" data-search="compress pdf reduce size">
+      <div class="ico">🗜️</div><h3>PDF Process</h3>
+      <p>PDF को दोबारा save करें; size कम होना guaranteed नहीं है।</p><button class="btn" data-tool="compress">Open Tool →</button>
+    </article>
+    <article class="card" data-cat="pdf" data-search="pdf to image png convert page">
+      <div class="ico">📄</div><h3>PDF to Images</h3>
+      <p>PDF page को PNG image में export करें।</p><button class="btn" data-tool="pdfimages">Open Tool →</button>
+    </article>
+    <article class="card" data-cat="utility" data-search="qr code generator link text">
+      <div class="ico">🔳</div><h3>QR Code Generator</h3>
+      <p>Text या URL का QR Code बनाएं।</p><button class="btn" data-tool="qr">Open Tool →</button>
+    </article>
+    <article class="card" data-cat="text" data-search="word repeater repeat word text">
+      <div class="ico">🔁</div><h3>Word Repeater</h3>
+      <p>किसी शब्द को तय संख्या में दोहराएं।</p><button class="btn" data-tool="repeat">Open Tool →</button>
+    </article>
+    <article class="card" data-cat="text" data-search="upside down text flip">
+      <div class="ico">🙃</div><h3>Upside Down Text</h3>
+      <p>टेक्स्ट को उल्टा दिखने वाले रूप में बदलें।</p><button class="btn" data-tool="upside">Open Tool →</button>
+    </article>
+    <article class="card" data-cat="text" data-search="word counter character sentence">
+      <div class="ico">✍️</div><h3>Word Counter</h3>
+      <p>Words, characters और sentences गिनें।</p><button class="btn" data-tool="counter">Open Tool →</button>
+    </article>
+    <article class="card" data-cat="text" data-search="uppercase lowercase title case">
+      <div class="ico">🔠</div><h3>Case Converter</h3>
+      <p>UPPERCASE, lowercase और Title Case।</p><button class="btn" data-tool="case">Open Tool →</button>
+    </article>
+    <article class="card" data-cat="text" data-search="text cleaner extra spaces">
+      <div class="ico">🧹</div><h3>Text Cleaner</h3>
+      <p>Extra spaces और blank lines हटाएं।</p><button class="btn" data-tool="clean">Open Tool →</button>
+    </article>
+    <article class="card" data-cat="calc" data-search="calculator maths addition">
+      <div class="ico">🧮</div><h3>Calculator</h3>
+      <p>Basic calculations करें।</p><button class="btn" data-tool="calculator">Open Tool →</button>
+    </article>
+    <article class="card" data-cat="calc" data-search="age calculator date birth">
+      <div class="ico">🎂</div><h3>Age Calculator</h3>
+      <p>Date of birth से उम्र निकालें।</p><button class="btn" data-tool="age">Open Tool →</button>
+    </article>
+    <article class="card" data-cat="calc" data-search="percentage calculator marks">
+      <div class="ico">💯</div><h3>Percentage Calculator</h3>
+      <p>Marks या value का percentage निकालें।</p><button class="btn" data-tool="percent">Open Tool →</button>
+    </article>
+    <article class="card" data-cat="utility" data-search="password generator random">
+      <div class="ico">🔐</div><h3>Password Generator</h3>
+      <p>Random password बनाएं।</p><button class="btn" data-tool="password">Open Tool →</button>
+    </article>
+    <article class="card" data-cat="utility" data-search="unit converter length weight temperature">
+      <div class="ico">📏</div><h3>Unit Converter</h3>
+      <p>Length, weight और temperature बदलें।</p><button class="btn" data-tool="units">Open Tool →</button>
+    </article>
+    <article class="card" data-cat="utility" data-search="date difference days between dates">
+      <div class="ico">📅</div><h3>Date Difference</h3>
+      <p>दो तारीखों के बीच दिनों की संख्या।</p><button class="btn" data-tool="datediff">Open Tool →</button>
+    </article>
+    <article class="card" data-cat="text" data-search="sample lorem text generator">
+      <div class="ico">📝</div><h3>Sample Text</h3>
+      <p>Sample text generate करें।</p><button class="btn" data-tool="sample">Open Tool →</button>
+    </article>
+  </section>
+
+  <section class="panel" id="panel">
+    <div class="paneltop">
+      <h2 id="panelTitle">Tool</h2>
+      <button class="close" id="closePanel">✕ Back</button>
+    </div>
+    <div id="body"></div>
+  </section>
+
+  <section class="panel" id="info">
+    <div class="paneltop">
+      <h2 id="infoTitle">About Us</h2>
+      <button class="close" id="closeInfo">✕ Back</button>
+    </div>
+    <div id="infoBody" class="legal"></div>
+  </section>
+</main>
+
+<footer id="footer">
+  <div class="foot">
+    <div class="brand">🧰 Tool<span>Mitra</span></div>
+    <p>Simple tools for everyday tasks.</p>
+    <a href="?page=about" data-info="about">About Us</a>
+    <a href="?page=contact" data-info="contact">Contact Us</a>
+    <a href="?page=privacy" data-info="privacy">Privacy Policy</a>
+    <a href="?page=terms" data-info="terms">Terms</a>
+    <a href="?page=disclaimer" data-info="disclaimer">Disclaimer</a>
+    <p>© 2026 ToolMitra</p>
+  </div>
+</footer>
+
+<script>
+'use strict';
+
+const EMAIL = 'sohailkhan9140477930@gmail.com';
+const $ = id => document.getElementById(id);
+const panel = $('panel');
+const body = $('body');
+const scripts = {};
+
+const names = {
+ imagepdf:'Image to PDF', merge:'PDF Merge', split:'PDF Split',
+ compress:'PDF Process', pdfimages:'PDF to Images', qr:'QR Code Generator',
+ repeat:'Word Repeater', upside:'Upside Down Text', counter:'Word Counter',
+ case:'Case Converter', clean:'Text Cleaner', calculator:'Calculator',
+ age:'Age Calculator', percent:'Percentage Calculator',
+ password:'Password Generator', units:'Unit Converter',
+ datediff:'Date Difference', sample:'Sample Text'
+};
+
+const fileInput = (id,multiple=false,accept='*/*') =>
+ `<div class="field"><label>File${multiple?'s':''} चुनें</label>
+ <input id="${id}" type="file" accept="${accept}" ${multiple?'multiple':''}></div>`;
+
+const actionButton = (id,label) =>
+ `<button class="btn" id="${id}">${label}</button><div class="status" id="${id}Status"></div>`;
+
+const templates = {
+ imagepdf:`<p>एक या कई photos को PDF में बदलें।</p>
+ ${fileInput('images',true,'image/*')}
+ <div class="field"><label>PDF filename</label><input id="pdfName" value="ToolMitra-Images.pdf"></div>
+ ${actionButton('makeImagePdf','Create PDF')}
+ <p class="note">इस टूल के लिए इंटरनेट से PDF library load होगी।</p>`,
+
+ merge:`<p>कम से कम दो PDF चुनें।</p>
+ ${fileInput('mergeFiles',true,'.pdf,application/pdf')}
+ ${actionButton('doMerge','Merge PDFs')}`,
+
+ split:`${fileInput('splitFile',false,'.pdf,application/pdf')}
+ <div class="field"><label>Pages (उदाहरण: 1,3,5-7)</label><input id="pages" placeholder="1,3,5-7"></div>
+ ${actionButton('doSplit','Extract Pages')}`,
+
+ compress:`${fileInput('compressFile',false,'.pdf,application/pdf')}
+ <p class="note">यह PDF को दोबारा save करता है। इससे file size कम होने की गारंटी नहीं है।</p>
+ ${actionButton('doCompress','Process PDF')}`,
+
+ pdfimages:`${fileInput('pdfImageFile',false,'.pdf,application/pdf')}
+ <div class="field"><label>Page number</label><input id="pdfPage" type="number" min="1" value="1"></div>
+ ${actionButton('doPdfImages','Convert page to PNG')}`,
+
+ qr:`<div class="field"><label>Text या URL</label><textarea id="qrText" placeholder="https://example.com"></textarea></div>
+ <div class="field"><label>QR size</label><select id="qrSize"><option>200</option><option selected>300</option><option>500</option></select></div>
+ <button class="btn" id="makeQr">Generate QR</button><div id="qrResult"></div>
+ <p class="note">QR बनाने के लिए text बाहरी QR service को भेजा जाएगा। संवेदनशील जानकारी न डालें।</p>`,
+
+ repeat:`<div class="field"><label>Word या text</label><input id="word" placeholder="Sohail"></div>
+ <div class="field"><label>कितनी बार? (1–10000)</label><input id="times" type="number" min="1" max="10000" value="10"></div>
+ <div class="field"><label>Separator</label><select id="sep"><option value="newline">हर बार नई लाइन</option><option value=" ">Space</option><option value=", ">Comma</option></select></div>
+ <button class="btn" id="doRepeat">Repeat Word</button><div class="result" id="repeatOut"></div><button class="btn gray" id="copyRepeat">Copy</button>`,
+
+ upside:`<div class="field"><label>Text लिखें</label><textarea id="upText" placeholder="Hello world"></textarea></div>
+ <button class="btn" id="doUpside">Flip Text</button><div class="result" id="upOut"></div>
+ <button class="btn gray" id="copyUp">Copy</button>
+ <p class="note">हर हिंदी अक्षर का सटीक उल्टा Unicode रूप उपलब्ध नहीं है।</p>`,
+
+ counter:`<div class="field"><label>Text</label><textarea id="countText" placeholder="यहाँ text लिखें..."></textarea></div>
+ <div class="stats">
+ <div class="stat"><b id="wordsN">0</b>Words</div>
+ <div class="stat"><b id="charsN">0</b>Characters</div>
+ <div class="stat"><b id="nospaceN">0</b>Without spaces</div>
+ <div class="stat"><b id="sentN">0</b>Sentences</div></div>`,
+
+ case:`<div class="field"><label>Text</label><textarea id="caseText"></textarea></div>
+ <div class="row"><button class="btn" id="upper">UPPERCASE</button><button class="btn" id="lower">lowercase</button><button class="btn" id="title">Title Case</button></div>
+ <div class="result" id="caseOut"></div><button class="btn gray" id="copyCase">Copy</button>`,
+
+ clean:`<div class="field"><label>Text</label><textarea id="cleanText"></textarea></div>
+ <button class="btn" id="doClean">Clean Text</button><div class="result" id="cleanOut"></div>
+ <button class="btn gray" id="copyClean">Copy</button>`,
+
+ calculator:`<div class="field"><label>First number</label><input id="a" type="number" value="10"></div>
+ <div class="field"><label>Operation</label><select id="op"><option>+</option><option>-</option><option>*</option><option>/</option><option>%</option></select></div>
+ <div class="field"><label>Second number</label><input id="b" type="number" value="2"></div>
+ <button class="btn" id="calc">Calculate</button><div class="result" id="calcOut"></div>`,
+
+ age:`<div class="field"><label>Date of birth</label><input id="dob" type="date"></div>
+ <button class="btn" id="ageCalc">Calculate Age</button><div class="result" id="ageOut"></div>`,
+
+ percent:`<div class="field"><label>Obtained marks/value</label><input id="got" type="number"></div>
+ <div class="field"><label>Total marks/value</label><input id="total" type="number"></div>
+ <button class="btn" id="pct">Calculate</button><div class="result" id="pctOut"></div>`,
+
+ password:`<div class="field"><label>Length (8–64)</label><input id="plen" type="number" min="8" max="64" value="16"></div>
+ <label><input type="checkbox" id="nums" checked> Numbers</label>
+ <label><input type="checkbox" id="symbols" checked> Symbols</label><p></p>
+ <button class="btn" id="genPass">Generate Password</button><div class="result" id="passOut"></div>
+ <button class="btn gray" id="copyPass">Copy</button>`,
+
+ units:`<div class="field"><label>Category</label><select id="kind"><option value="length">Length</option><option value="weight">Weight</option><option value="temp">Temperature</option></select></div>
+ <div class="field"><label>Value</label><input id="uv" type="number" value="1"></div>
+ <div class="row"><div class="field"><label>From</label><select id="uf"></select></div><div class="field"><label>To</label><select id="ut"></select></div></div>
+ <button class="btn" id="convert">Convert</button><div class="result" id="unitOut"></div>`,
+
+ datediff:`<div class="field"><label>Start date</label><input id="date1" type="date"></div>
+ <div class="field"><label>End date</label><input id="date2" type="date"></div>
+ <button class="btn" id="diff">Find Difference</button><div class="result" id="diffOut"></div>`,
+
+ sample:`<div class="field"><label>Paragraphs (1–10)</label><input id="sampleN" type="number" min="1" max="10" value="3"></div>
+ <button class="btn" id="sampleGen">Generate</button><div class="result" id="sampleOut"></div>
+ <button class="btn gray" id="copySample">Copy</button>`
+};
+
+const infoText = {
+ about:`<h3>About ToolMitra</h3>
+ <p>ToolMitra एक all-in-one tools website है। इसमें PDF tools, QR Code Generator, text utilities और calculators उपलब्ध हैं। हमारा उद्देश्य रोजमर्रा के digital कामों को आसान बनाना है।</p>`,
+
+ contact:`<h3>Contact Us</h3>
+ <p>सुझाव, समस्या या सहायता के लिए ईमेल करें:</p>
+ <p><a href="mailto:${EMAIL}">${EMAIL}</a></p>`,
+
+ privacy:`<h3>Privacy Policy</h3>
+ <p>कई tools आपके browser में locally काम करते हैं। QR Code Generator में QR बनाने के लिए दर्ज किया गया text या URL बाहरी QR service को भेजा जाता है। PDF tools के लिए बाहरी CDN से libraries load होती हैं। संवेदनशील जानकारी इन tools में न डालें।</p>
+ <p>यदि वेबसाइट पर विज्ञापन या analytics जोड़े जाते हैं, तो इस policy को उस वास्तविक setup के अनुसार अपडेट करना जरूरी है।</p>`,
+
+ terms:`<h3>Terms & Conditions</h3>
+ <p>ToolMitra के tools सामान्य उपयोग के लिए दिए गए हैं। जरूरी files की backup copy रखें और डाउनलोड की गई files को जाँच लें। सभी devices या files पर हर feature के सही चलने की गारंटी नहीं है।</p>`,
+
+ disclaimer:`<h3>Disclaimer</h3>
+ <p>ToolMitra उपयोगी online tools उपलब्ध कराने का प्रयास करता है। PDF process करने से file size कम होना guaranteed नहीं है। QR tool बाहरी service का उपयोग करता है। जरूरी कामों के लिए परिणाम की जाँच स्वयं करें।</p>`
+};
+
+function loadScript(src){
+ if(scripts[src]) return scripts[src];
+ scripts[src]=new Promise((resolve,reject)=>{
+  const s=document.createElement('script');
+  s.src=src;s.onload=resolve;
+  s.onerror=()=>{delete scripts[src];reject(new Error('Library load नहीं हुई। इंटरनेट चेक करें।'));};
+  document.head.appendChild(s);
+ });
+ return scripts[src];
+}
+
+function setStatus(id,message){
+ const el=$(id+'Status');
+ if(el) el.textContent=message;
+}
+
+function download(blob,name){
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement('a');
+ a.href=url;a.download=name;
+ document.body.appendChild(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+
+async function copyElement(id){
+ const el=$(id);
+ const text=el ? (('value' in el)?el.value:el.textContent) : '';
+ if(!text){alert('पहले result बनाएं।');return;}
+ try{
+  await navigator.clipboard.writeText(text);
+ }catch(e){
+  const x=document.createElement('textarea');
+  x.value=text;document.body.appendChild(x);x.select();
+  document.execCommand('copy');x.remove();
+ }
+ alert('Copied!');
+}
+
+/* ---------- PAGE NAVIGATION: BACK BUTTON FIX ---------- */
+
+function hideHome(){
+ $('hero').classList.add('hide');
+ $('homeHead').classList.add('hide');
+ $('chips').classList.add('hide');
+ $('grid').classList.add('hide');
+ $('footer').classList.add('hide');
+}
+
+function showHome(){
+ panel.classList.remove('show','tool-page');
+ $('info').classList.remove('show','tool-page');
+ hideHomeUndo();
+ document.title='ToolMitra - All-in-One Tools';
+ window.scrollTo(0,0);
+}
+
+function hideHomeUndo(){
+ $('hero').classList.remove('hide');
+ $('homeHead').classList.remove('hide');
+ $('chips').classList.remove('hide');
+ $('grid').classList.remove('hide');
+ $('footer').classList.remove('hide');
+}
+
+function openTool(key,push=true){
+ if(!templates[key]) return;
+ $('info').classList.remove('show','tool-page');
+ hideHome();
+ panel.classList.add('show','tool-page');
+ $('panelTitle').textContent=names[key];
+ body.innerHTML=templates[key];
+ $('dropdown').classList.remove('show');
+ document.title=names[key]+' - ToolMitra';
+ if(push) history.pushState({page:'tool',key},'', '?tool='+encodeURIComponent(key));
+ window.scrollTo(0,0);
+ initTool(key);
+}
+
+function openInfo(key,push=true){
+ if(!infoText[key]) return;
+ panel.classList.remove('show','tool-page');
+ hideHome();
+ $('infoTitle').textContent=({
+  about:'About Us',contact:'Contact Us',privacy:'Privacy Policy',
+  terms:'Terms & Conditions',disclaimer:'Disclaimer'
+ })[key];
+ $('infoBody').innerHTML=infoText[key];
+ $('info').classList.add('show','tool-page');
+ $('dropdown').classList.remove('show');
+ document.title=$('infoTitle').textContent+' - ToolMitra';
+ if(push) history.pushState({page:'info',key},'', '?page='+encodeURIComponent(key));
+ window.scrollTo(0,0);
+}
+
+function routeFromUrl(){
+ const params=new URLSearchParams(location.search);
+ const tool=params.get('tool');
+ const page=params.get('page');
+
+ if(tool && templates[tool]){
+  openTool(tool,false);
+ }else if(page && infoText[page]){
+  openInfo(page,false);
+ }else{
+  showHome();
+ }
+}
+
+/* Mobile browser Back button and Android WebView history */
+window.addEventListener('popstate',routeFromUrl);
+
+function closeCurrentPage(){
+ if(location.search){
+  history.back();
+ }else{
+  showHome();
+ }
+}
+
+/* ---------- TOOL FUNCTIONS ---------- */
+
+function initTool(k){
+
+ if(k==='imagepdf'){
+  $('makeImagePdf').onclick=async()=>{
+   try{
+    const files=[...$('images').files];
+    if(!files.length) throw Error('पहले images चुनें।');
+    setStatus('makeImagePdf','Processing...');
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+    let doc=null;
+    for(const f of files){
+     const data=await new Promise((resolve,reject)=>{
+      const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(f);
+     });
+     const img=await new Promise((resolve,reject)=>{
+      const i=new Image();i.onload=()=>resolve(i);i.onerror=reject;i.src=data;
+     });
+     if(!doc) doc=new jspdf.jsPDF({orientation:img.width>img.height?'landscape':'portrait',unit:'pt',format:'a4'});
+     else doc.addPage('a4',img.width>img.height?'landscape':'portrait');
+     const w=doc.internal.pageSize.getWidth(),h=doc.internal.pageSize.getHeight();
+     const scale=Math.min(w/img.width,h/img.height);
+     const fmt=f.type==='image/png'?'PNG':'JPEG';
+     doc.addImage(data,fmt,(w-img.width*scale)/2,(h-img.height*scale)/2,img.width*scale,img.height*scale);
+    }
+    let filename=$('pdfName').value.trim()||'ToolMitra.pdf';
+    if(!filename.toLowerCase().endsWith('.pdf')) filename+='.pdf';
+    doc.save(filename.replace(/[\\/:*?"<>|]/g,'_'));
+    setStatus('makeImagePdf','PDF download शुरू हो गया।');
+   }catch(e){setStatus('makeImagePdf',e.message||'PDF नहीं बन पाई।');}
+  };
+ }
+
+ if(['merge','split','compress'].includes(k)){
+  const id=k==='merge'?'doMerge':k==='split'?'doSplit':'doCompress';
+  $(id).onclick=async()=>{
+   try{
+    setStatus(id,'Processing PDF...');
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js');
+    const PDF=PDFLib.PDFDocument;
+    let output;
+
+    if(k==='merge'){
+     const files=[...$('mergeFiles').files];
+     if(files.length<2) throw Error('कम से कम 2 PDF चुनें।');
+     output=await PDF.create();
+     for(const f of files){
+      const src=await PDF.load(await f.arrayBuffer());
+      const pages=await output.copyPages(src,src.getPageIndices());
+      pages.forEach(p=>output.addPage(p));
+     }
+     download(new Blob([await output.save()],{type:'application/pdf'}),'ToolMitra-Merged.pdf');
+    }else{
+     const f=$(k==='split'?'splitFile':'compressFile').files[0];
+     if(!f) throw Error('पहले PDF चुनें।');
+     const src=await PDF.load(await f.arrayBuffer());
+     output=await PDF.create();
+     let indexes=[];
+
+     if(k==='split'){
+      const spec=$('pages').value.trim();
+      if(!spec) throw Error('Page numbers दर्ज करें।');
+      for(const part of spec.split(',')){
+       const m=part.trim().match(/^(\d+)(?:-(\d+))?$/);
+       if(!m) throw Error('Format: 1,3,5-7');
+       const start=Number(m[1]),end=Number(m[2]||m[1]);
+       if(start<1||end<start||end>src.getPageCount()) throw Error('Page number PDF की range से बाहर है।');
+       for(let n=start;n<=end;n++) indexes.push(n-1);
+      }
+      indexes=[...new Set(indexes)];
+     }else{
+      indexes=src.getPageIndices();
+     }
+
+     const pages=await output.copyPages(src,indexes);
+     pages.forEach(p=>output.addPage(p));
+     const filename=k==='split'?'ToolMitra-Split.pdf':'ToolMitra-Processed.pdf';
+     download(new Blob([await output.save()],{type:'application/pdf'}),filename);
+    }
+    setStatus(id,'Done! Download शुरू हो गया।');
+   }catch(e){setStatus(id,e.message||'PDF process नहीं हुई।');}
+  };
+ }
+
+ if(k==='pdfimages'){
+  $('doPdfImages').onclick=async()=>{
+   try{
+    const f=$('pdfImageFile').files[0];
+    if(!f) throw Error('पहले PDF चुनें।');
+    setStatus('doPdfImages','Processing...');
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+    pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    const pdf=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise;
+    const n=Number($('pdfPage').value);
+    if(n<1||n>pdf.numPages) throw Error('यह page number PDF में नहीं है।');
+    const page=await pdf.getPage(n);
+    const viewport=page.getViewport({scale:2});
+    const canvas=document.createElement('canvas');
+    canvas.width=viewport.width;canvas.height=viewport.height;
+    await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
+    canvas.toBlob(blob=>{
+     if(blob) download(blob,`ToolMitra-page-${n}.png`);
+     setStatus('doPdfImages','PNG तैयार है।');
+    },'image/png');
+   }catch(e){setStatus('doPdfImages',e.message||'Convert नहीं हो पाया।');}
+  };
+ }
+
+ if(k==='qr'){
+  $('makeQr').onclick=()=>{
+   const text=$('qrText').value.trim();
+   if(!text){alert('Text या URL लिखें।');return;}
+   const size=$('qrSize').value;
+   const url='https://api.qrserver.com/v1/create-qr-code/?size='+size+'x'+size+'&data='+encodeURIComponent(text);
+   $('qrResult').innerHTML='';
+   const img=document.createElement('img');
+   img.className='qr';img.alt='QR Code';img.src=url;
+   const link=document.createElement('a');
+   link.className='btn green';link.href=url;link.target='_blank';
+   link.rel='noopener';link.textContent='Open / Download QR';
+   $('qrResult').append(img,link);
+  };
+ }
+
+ if(k==='repeat'){
+  $('doRepeat').onclick=()=>{
+   const word=$('word').value;
+   const n=Number($('times').value);
+   if(!word.trim()){alert('शब्द या text लिखें।');return;}
+   if(!Number.isInteger(n)||n<1||n>10000){alert('1 से 10000 के बीच संख्या डालें।');return;}
+   const sep=$('sep').value==='newline'?'\n':$('sep').value;
+   $('repeatOut').textContent=Array(n).fill(word).join(sep);
+  };
+  $('copyRepeat').onclick=()=>copyElement('repeatOut');
+ }
+
+ if(k==='upside'){
+  const map={
+   a:'ɐ',b:'q',c:'ɔ',d:'p',e:'ǝ',f:'ɟ',g:'ƃ',h:'ɥ',i:'ᴉ',j:'ɾ',
+   k:'ʞ',l:'ן',m:'ɯ',n:'u',o:'o',p:'d',q:'b',r:'ɹ',s:'s',t:'ʇ',
+   u:'n',v:'ʌ',w:'ʍ',x:'x',y:'ʎ',z:'z',
+   A:'∀',B:'𐐒',C:'Ɔ',D:'◖',E:'Ǝ',F:'Ⅎ',G:'פ',H:'H',I:'I',
+   J:'ſ',K:'⋊',L:'˥',M:'W',N:'N',O:'O',P:'Ԁ',Q:'Ό',R:'ᴚ',
+   S:'S',T:'⊥',U:'∩',V:'Λ',W:'M',X:'X',Y:'⅄',Z:'Z',
+   '.':'˙',',':"'", "'":',','?':'¿','!':'¡','(' : ')',')':'(',
+   '[':']',']':'[','1':'Ɩ','2':'ᄅ','3':'Ɛ','4':'ㄣ','5':'ϛ',
+   '6':'9','7':'ㄥ','8':'8','9':'6','0':'0'
+  };
+  $('doUpside').onclick=()=>{
+   $('upOut').textContent=Array.from($('upText').value).reverse().map(c=>map[c]||c).join('');
+  };
+  $('copyUp').onclick=()=>copyElement('upOut');
+ }
+
+ if(k==='counter'){
+  $('countText').oninput=()=>{
+   const t=$('countText').value;
+   $('wordsN').textContent=(t.trim().match(/\S+/g)||[]).length;
+   $('charsN').textContent=Array.from(t).length;
+   $('nospaceN').textContent=Array.from(t.replace(/\s/g,'')).length;
+   $('sentN').textContent=(t.match(/[.!?।]+/g)||[]).length;
+  };
+ }
+
+ if(k==='case'){
+  const text=()=>$('caseText').value;
+  $('upper').onclick=()=>$('caseOut').textContent=text().toUpperCase();
+  $('lower').onclick=()=>$('caseOut').textContent=text().toLowerCase();
+  $('title').onclick=()=>$('caseOut').textContent=text().toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
+  $('copyCase').onclick=()=>copyElement('caseOut');
+ }
+
+ if(k==='clean'){
+  $('doClean').onclick=()=>{
+   $('cleanOut').textContent=$('cleanText').value
+    .replace(/[ \t]+/g,' ')
+    .replace(/ *\n */g,'\n')
+    .replace(/\n{3,}/g,'\n\n').trim();
+  };
+  $('copyClean').onclick=()=>copyElement('cleanOut');
+ }
+
+ if(k==='calculator'){
+  $('calc').onclick=()=>{
+   const a=Number($('a').value),b=Number($('b').value),op=$('op').value;
+   if($('a').value===''||$('b').value===''){ $('calcOut').textContent='दोनों numbers दर्ज करें।';return;}
+   let result;
+   if(op==='+')result=a+b;
+   else if(op==='-')result=a-b;
+   else if(op==='*')result=a*b;
+   else if(op==='/')result=b===0?'Zero से divide नहीं कर सकते।':a/b;
+   else result=b===0?'Zero से divide नहीं कर सकते।':a%b;
+   $('calcOut').textContent=result;
+  };
+ }
+
+ if(k==='age'){
+  $('ageCalc').onclick=()=>{
+   const value=$('dob').value;
+   if(!value){alert('Date of birth चुनें।');return;}
+   const d=new Date(value+'T00:00:00'),now=new Date();
+   if(d>now){alert('आज से पहले की date चुनें।');return;}
+   let y=now.getFullYear()-d.getFullYear();
+   let m=now.getMonth()-d.getMonth();
+   let day=now.getDate()-d.getDate();
+   if(day<0){m--;day+=new Date(now.getFullYear(),now.getMonth(),0).getDate();}
+   if(m<0){y--;m+=12;}
+   $('ageOut').textContent=`${y} साल, ${m} महीने, ${day} दिन`;
+  };
+ }
+
+ if(k==='percent'){
+  $('pct').onclick=()=>{
+   const a=$('got').value,b=$('total').value;
+   $('pctOut').textContent=a===''||b===''||Number(b)===0
+    ?'Valid values दर्ज करें।'
+    :(Number(a)/Number(b)*100).toFixed(2)+'%';
+  };
+ }
+
+ if(k==='password'){
+  $('genPass').onclick=()=>{
+   let chars='abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ';
+   if($('nums').checked) chars+='23456789';
+   if($('symbols').checked) chars+='!@#$%&*+-_=?';
+   const n=Math.max(8,Math.min(64,Number($('plen').value)||16));
+   const random=new Uint32Array(n);
+   crypto.getRandomValues(random);
+   $('passOut').textContent=Array.from(random,x=>chars[x%chars.length]).join('');
+  };
+  $('copyPass').onclick=()=>copyElement('passOut');
+ }
+
+ if(k==='units'){
+  const groups={
+   length:{m:1,km:1000,cm:.01,mm:.001,ft:.3048,inch:.0254,mi:1609.344},
+   weight:{kg:1,g:.001,mg:.000001,lb:.45359237,oz:.0283495},
+   temp:{C:0,F:1,K:2}
+  };
+  const labels={m:'Meter',km:'Kilometer',cm:'Centimeter',mm:'Millimeter',ft:'Feet',inch:'Inch',mi:'Mile',kg:'Kilogram',g:'Gram',mg:'Milligram',lb:'Pound',oz:'Ounce',C:'Celsius',F:'Fahrenheit',K:'Kelvin'};
+
+  function fillUnits(){
+   const group=$('kind').value;
+   const keys=Object.keys(groups[group]);
+   ['uf','ut'].forEach(id=>{
+    $(id).innerHTML=keys.map(key=>`<option value="${key}">${labels[key]}</option>`).join('');
+   });
+   $('uf').value=group==='length'?'km':group==='weight'?'kg':'C';
+   $('ut').value=group==='length'?'m':group==='weight'?'g':'F';
+  }
+
+  $('kind').onchange=fillUnits;
+  fillUnits();
+
+  $('convert').onclick=()=>{
+   const v=Number($('uv').value),a=$('uf').value,b=$('ut').value,group=$('kind').value;
+   let result;
+   if(group==='temp'){
+    const c=a==='C'?v:a==='F'?(v-32)*5/9:v-273.15;
+    result=b==='C'?c:b==='F'?c*9/5+32:c+273.15;
+   }else{
+    result=v*groups[group][a]/groups[group][b];
+   }
+   $('unitOut').textContent=`${v} ${labels[a]} = ${Number(result.toFixed(6))} ${labels[b]}`;
+  };
+ }
+
+ if(k==='datediff'){
+  $('diff').onclick=()=>{
+   const a=$('date1').value,b=$('date2').value;
+   if(!a||!b){alert('दोनों तारीखें चुनें।');return;}
+   const days=Math.abs(Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/86400000));
+   $('diffOut').textContent=days+' दिन';
+  };
+ }
+
+ if(k==='sample'){
+  const paras=[
+   'ToolMitra आपकी रोजमर्रा की digital जरूरतों के लिए उपयोगी tools एक जगह उपलब्ध कराने का प्रयास करता है।',
+   'इस sample text को आप अपनी वेबसाइट, document या testing के लिए इस्तेमाल कर सकते हैं।',
+   'सरल design और आसान navigation से tools का इस्तेमाल मोबाइल पर भी सुविधाजनक रहता है।'
+  ];
+  $('sampleGen').onclick=()=>{
+   const n=Math.max(1,Math.min(10,Number($('sampleN').value)||1));
+   $('sampleOut').textContent=Array.from({length:n},(_,i)=>paras[i%paras.length]).join('\n\n');
+  };
+  $('copySample').onclick=()=>copyElement('sampleOut');
+ }
+}
+
+/* ---------- EVENTS ---------- */
+
+$('grid').addEventListener('click',e=>{
+ const btn=e.target.closest('[data-tool]');
+ if(btn) openTool(btn.dataset.tool,true);
+});
+
+$('menuBtn').onclick=()=>$('dropdown').classList.toggle('show');
+
+document.body.addEventListener('click',e=>{
+ const link=e.target.closest('[data-info]');
+ if(!link)return;
+ e.preventDefault();
+ openInfo(link.dataset.info,true);
+});
+
+$('closePanel').onclick=closeCurrentPage;
+$('closeInfo').onclick=closeCurrentPage;
+
+$('search').oninput=function(){
+ const query=this.value.toLowerCase().trim();
+ let count=0;
+ document.querySelectorAll('.card[data-cat]').forEach(card=>{
+  const match=(card.dataset.search+' '+card.textContent).toLowerCase().includes(query);
+  card.style.display=match?'':'none';
+  if(match)count++;
+ });
+ $('count').textContent=count+' tools';
+ document.querySelectorAll('.chip').forEach(chip=>chip.classList.toggle('active',chip.dataset.cat==='all'));
+};
+
+$('chips').onclick=e=>{
+ const btn=e.target.closest('[data-cat]');
+ if(!btn)return;
+ document.querySelectorAll('.chip').forEach(chip=>chip.classList.toggle('active',chip===btn));
+ $('search').value='';
+ let count=0;
+ document.querySelectorAll('.card[data-cat]').forEach(card=>{
+  const match=btn.dataset.cat==='all'||card.dataset.cat===btn.dataset.cat;
+  card.style.display=match?'':'none';
+  if(match)count++;
+ });
+ $('count').textContent=count+' tools';
+};
+
+/* Page खोलने या refresh करने पर सही screen दिखाओ */
+routeFromUrl();
+</script>
+</body>
+</html>
